@@ -1,0 +1,12 @@
+#Steps to run the application#
+
+
+mvn clean
+mvn install
+mvn build   spring-boot:run
+
+
+APIs to test:
+
+1. Health check:
+http://localhost:8080/actuator/health
