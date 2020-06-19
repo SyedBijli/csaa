@@ -10,3 +10,6 @@ APIs to test:
 
 1. Health check:
 http://localhost:8080/actuator/health
+
+2. REST API for event info
+http://localhost:8080/csaa/events/octocat/Hello-World/events

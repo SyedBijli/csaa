@@ -1,72 +1,33 @@
 package com.csaa.app.controller;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
-import org.springframework.boot.json.JsonParser;
-import org.springframework.boot.json.JsonParserFactory;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.client.RestTemplate;
 
-import com.csaa.app.model.Actor;
 import com.csaa.app.model.Event;
+import com.csaa.app.service.EventService;
 
 @RestController
 @RequestMapping("/csaa")
 public class EventController {
 	
-	@SuppressWarnings("unchecked")
+	@Autowired
+	private EventService eventService;
+	
 	@GetMapping(value="/events/{owner}/{repo}/{type}", produces= {MediaType.APPLICATION_JSON_VALUE})
-	public ResponseEntity<List<Event>> getEvents(@PathVariable String owner, 
+	public ResponseEntity<List<Event>> getEvents(
+			@PathVariable String owner, 
 			@PathVariable String repo, 
 			@PathVariable String type) {	
 		
-		Event event = null; 
-		List<Event> eventList = null;
+		return eventService.getEvents(owner, repo, type);
 		
-		//invoking the git api. 
-		RestTemplate restTemplate = new RestTemplate();
-		String uri  = "https://api.github.com/repos/"+owner+"/"+repo+"/events";	    
-	    String resp = restTemplate.getForObject(uri, String.class);
-	    
-	    //parsing the resonse json.
-	    JsonParser springParser = JsonParserFactory.getJsonParser();
-	    List<Object> list = springParser.parseList(resp);
-	    eventList = new ArrayList<Event>();
-	    for(Object o : list) {
-	    	
-	    	if(o instanceof Map) {
-	    		Map<String,Object> map = (Map<String,Object>) o;	    		
-	    		event = new Event();	    		
-	    		
-	    		for (Map.Entry<String, Object> entry : map.entrySet()) {
-	    			System.out.println(entry.getKey() + " = " + entry.getValue());	    			
-	    			
-	    			if(entry.getKey().contentEquals("actor")) {
-	    				Actor actor = new Actor();
-	    				actor.setActor(entry.getValue());
-	    				event.setActor(actor);
-	    			}	    			
-	    			if(entry.getKey().contentEquals("created_at")) {
-	    				event.setTimeStamp(entry.getValue().toString());
-	    			}
-	    			eventList.add(event);
-	    		}
-	    		
-	    	}
-	    	
-	    }
-	    
-	    if (resp.isEmpty()) {
-	        return ResponseEntity.notFound().build();
-	    } else {	    	   	
-	        return ResponseEntity.ok(eventList);
-	    }
+		
 	}
 }
