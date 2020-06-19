@@ -1,30 +1,72 @@
 package com.csaa.app.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.boot.json.JsonParser;
+import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.client.RestTemplate;
 
+import com.csaa.app.model.Actor;
 import com.csaa.app.model.Event;
 
 @RestController
 @RequestMapping("/csaa")
 public class EventController {
 	
+	@SuppressWarnings("unchecked")
 	@GetMapping(value="/events/{owner}/{repo}/{type}", produces= {MediaType.APPLICATION_JSON_VALUE})
-	public Event getEvents(@PathVariable String owner, 
+	public ResponseEntity<List<Event>> getEvents(@PathVariable String owner, 
 			@PathVariable String repo, 
 			@PathVariable String type) {	
 		
 		Event event = null; 
+		List<Event> eventList = null;
+		
+		//invoking the git api. 
 		RestTemplate restTemplate = new RestTemplate();
-		String uri  = "https://api.github.com/repos/"+owner+"/"+repo+"/"+type;
-
+		String uri  = "https://api.github.com/repos/"+owner+"/"+repo+"/events";	    
+	    String resp = restTemplate.getForObject(uri, String.class);
 	    
-	    String result = restTemplate.getForObject(uri, String.class);
-	    System.out.println(result);
-	    return event;
+	    //parsing the resonse json.
+	    JsonParser springParser = JsonParserFactory.getJsonParser();
+	    List<Object> list = springParser.parseList(resp);
+	    eventList = new ArrayList<Event>();
+	    for(Object o : list) {
+	    	
+	    	if(o instanceof Map) {
+	    		Map<String,Object> map = (Map<String,Object>) o;	    		
+	    		event = new Event();	    		
+	    		
+	    		for (Map.Entry<String, Object> entry : map.entrySet()) {
+	    			System.out.println(entry.getKey() + " = " + entry.getValue());	    			
+	    			
+	    			if(entry.getKey().contentEquals("actor")) {
+	    				Actor actor = new Actor();
+	    				actor.setActor(entry.getValue());
+	    				event.setActor(actor);
+	    			}	    			
+	    			if(entry.getKey().contentEquals("created_at")) {
+	    				event.setTimeStamp(entry.getValue().toString());
+	    			}
+	    			eventList.add(event);
+	    		}
+	    		
+	    	}
+	    	
+	    }
+	    
+	    if (resp.isEmpty()) {
+	        return ResponseEntity.notFound().build();
+	    } else {	    	   	
+	        return ResponseEntity.ok(eventList);
+	    }
 	}
 }

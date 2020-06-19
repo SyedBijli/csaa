@@ -1,22 +1,23 @@
 package com.csaa.app.model;
 
 public class Event {
-	private String eventType;
-	private String actorInfo;
+	private String type;
+	private Actor actor;
 	private String timeStamp;
 	
 	
-	public String getEventType() {
-		return eventType;
+	
+	public String getType() {
+		return type;
 	}
-	public void setEventType(String eventType) {
-		this.eventType = eventType;
+	public void setType(String type) {
+		this.type = type;
 	}
-	public String getActorInfo() {
-		return actorInfo;
+	public Actor getActor() {
+		return actor;
 	}
-	public void setActorInfo(String actorInfo) {
-		this.actorInfo = actorInfo;
+	public void setActor(Actor actor) {
+		this.actor = actor;
 	}
 	public String getTimeStamp() {
 		return timeStamp;
@@ -24,6 +25,19 @@ public class Event {
 	public void setTimeStamp(String timeStamp) {
 		this.timeStamp = timeStamp;
 	}
+	
+		
+	
+
+	
+
+	
+
+	
+
+	
+
+	
 	
 	
 }
