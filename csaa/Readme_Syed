@@ -13,3 +13,6 @@ http://localhost:8080/actuator/health
 
 2. REST API for event info
 http://localhost:8080/csaa/events/octocat/Hello-World/events
+
+3. REST API for my own repo events for today
+http://localhost:8080/csaa/events/syedbijli/csaa/events

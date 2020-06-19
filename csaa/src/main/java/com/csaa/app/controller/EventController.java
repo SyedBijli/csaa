@@ -16,9 +16,9 @@ import com.csaa.app.service.EventService;
 @RestController
 @RequestMapping("/csaa")
 public class EventController {
-	
 	@Autowired
 	private EventService eventService;
+	
 	
 	@GetMapping(value="/events/{owner}/{repo}/{type}", produces= {MediaType.APPLICATION_JSON_VALUE})
 	public ResponseEntity<List<Event>> getEvents(

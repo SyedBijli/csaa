@@ -7,11 +7,13 @@ import java.util.Map;
 import org.springframework.boot.json.JsonParser;
 import org.springframework.boot.json.JsonParserFactory;
 import org.springframework.http.ResponseEntity;
+import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
 import com.csaa.app.model.Actor;
 import com.csaa.app.model.Event;
 
+@Service
 public class EventServiceImpl implements EventService{
 
 	@Override
